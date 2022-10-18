@@ -13,6 +13,7 @@ from datetime import datetime
 import string
 import random
 import json
+import errno
 
 def config_maker(settings, config_file):
     with open(config_file, "w") as fw:
@@ -23,7 +24,6 @@ def file_exists(path_to_file):
     if os.path.exists(path_to_file) and os.path.getsize(path_to_file) > 0:
         return path_to_file
     return argparse.ArgumentTypeError(f"{path_to_file} empty or does not exist")
-      
 
 def main(settings):
     
@@ -89,8 +89,23 @@ if __name__ == '__main__':
         random_letters = "".join([random.choice(string.ascii_letters) for n in range(3)])
         config_file = os.path.join(execution_folder, f"config/config_{random_letters}_{execution_time}.yaml")  
     else:
-        config_file = os.path.join(execution_folder, f"config/config_{prefix}_{execution_time}.json")        
+        config_file = os.path.join(execution_folder, f"config/config_{prefix}_{execution_time}.json")
     
+    toga_folder = os.path.join(execution_folder, f"TOGA")
+    if not os.path.exists(toga_folder):
+        print(f"TOGA not found in {execution_folder}! Please download it!")
+        raise FileNotFoundError(
+             errno.ENOENT, os.strerror(errno.ENOENT), toga_folder)
+    
+    if mode == "human":
+        u12 = os.path.join(toga_folder, "/supply/hg38.U12sites.tsv")
+        isoforms = os.path.join(toga_folder, "/supply/hg38.v35.for_toga.isoforms.tsv")
+        annotation = os.path.join(toga_folder, "/supply/hg38.v35.for_toga.bed")
+    elif mode == "mouse":
+        u12 = os.path.join(toga_folder, "/supply/mm10.U12sites.tsv")
+        isoforms = os.path.join(toga_folder, "/supply/mm10.v25.for_toga.isoforms.tsv")
+        annotation = os.path.join(toga_folder, "/supply/mm10.v25.for_toga.bed")
+        
     settings = {
         "reference_genome": reference_genome,
         "annotation": annotation,
