@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Snaketoga - snakemake wrapper for TOGA orthologs annotator')
     parser.add_argument("-r", "--reference", help="Reference genome you are going to use.\
         Here human == hg38, mouse = mm10. For others use custom mode.", 
-        choices=["human", "mouse", "custom"], default="human",  type=file_exists)
+        choices=["human", "mouse", "chicken", "custom"], default="human",  type=file_exists)
     parser.add_argument("-rg", "--reference-genome", help="Path to softmasked reference genome file in FASTA format", 
                         required=True, type=file_exists)
     parser.add_argument("-a", "--annotation",
@@ -105,6 +105,9 @@ if __name__ == '__main__':
         u12 = os.path.join(toga_folder, "/supply/mm10.U12sites.tsv")
         isoforms = os.path.join(toga_folder, "/supply/mm10.v25.for_toga.isoforms.tsv")
         annotation = os.path.join(toga_folder, "/supply/mm10.v25.for_toga.bed")
+    elif mode == "chicken":
+        isoforms = os.path.join(toga_folder, "/TOGAInput/chicken_galGal6/toga.isoforms.tsv")
+        annotation = os.path.join(toga_folder, "/TOGAInput/chicken_galGal6/toga.transcripts.bed")
         
     settings = {
         "reference_genome": reference_genome,
@@ -118,6 +121,7 @@ if __name__ == '__main__':
         "mode" : mode,
         "execution_folder" : execution_folder,
         "dry" : dry,
+        "toga_folder": toga_folder,
         "config_file" : config_file
     }
     
